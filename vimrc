@@ -1,7 +1,7 @@
 " Dependencies:
 " - ctags (tagbar)
 " - powerline fonts (vim-airline)
-" - the_silver_searcher (ctrlp) 
+" - the_silver_searcher (ctrlp)
 
 
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -28,7 +28,7 @@ Plug 'leshill/vim-json'
 Plug 'psychollama/further.vim'
 
 Plug 'ctrlpvim/ctrlp.vim'
-Plug 'valloric/youcompleteme'
+"Plug 'valloric/youcompleteme'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'mileszs/ack.vim'
@@ -39,6 +39,7 @@ Plug 'tpope/vim-eunuch'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
 Plug 'airblade/vim-gitgutter'
+Plug 'w0rp/ale'
 
 call plug#end()
 
@@ -47,6 +48,7 @@ let g:airline_theme = 'codedark'
 let g:airline_powerline_fonts = 1
 let g:indent_guides_enable_on_vim_startup = 1
 
+set encoding=utf-8
 syntax on
 colorscheme codedark
 set nu rnu
@@ -56,13 +58,23 @@ set nowrap
 set cursorline
 set autoread
 
+" Temp swap files
+set dir=$HOME/.vim/tmp/swap
+if !isdirectory(&dir) | call mkdir(&dir, 'p', 0700) | endif
+
+" disable scrollbars
+set guioptions-=r
+set guioptions-=R
+set guioptions-=l
+set guioptions-=L
+
 filetype plugin indent on
 set tabstop=2
 set shiftwidth=2
 set expandtab
 set updatetime=100
 
-let mapleader = "\<Space>" 
+let mapleader = "\<Space>"
 
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
@@ -95,4 +107,7 @@ endif
 nmap <leader>t :TagbarToggle<CR>
 set mouse=
 set ttymouse=
+
+" JavaScript syntax
+let g:javascript_plugin_flow = 1
 
