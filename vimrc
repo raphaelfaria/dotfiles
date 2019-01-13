@@ -27,18 +27,24 @@ Plug 'mxw/vim-jsx'
 Plug 'leshill/vim-json'
 Plug 'psychollama/further.vim'
 
-Plug 'ctrlpvim/ctrlp.vim'
-"Plug 'valloric/youcompleteme'
+" -- TypeScript
+Plug 'Quramy/tsuquyomi'
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
+
+" Plug 'ctrlpvim/ctrlp.vim'
+Plug 'valloric/youcompleteme'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'mileszs/ack.vim'
-Plug 'majutsushi/tagbar'
+" Plug 'majutsushi/tagbar'
 Plug 'terryma/vim-multiple-cursors'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+Plug 'junegunn/fzf.vim'
 
 Plug 'tpope/vim-eunuch'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
-Plug 'airblade/vim-gitgutter'
 Plug 'w0rp/ale'
 
 call plug#end()
@@ -81,27 +87,22 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+nmap <C-S-F> :Ag<Space>
+
 " -- Plugin Config
 
 " NERDTree
 nmap <C-b> :NERDTreeToggle<CR>
 nmap <leader>b :NERDTreeToggle<CR>
 
-" CtrlP
-nmap <leader>p :CtrlP<CR>
-nmap <C-u> :CtrlPBuffer<CR>
-nmap <leader>u :CtrlPBuffer<CR>
-
-if executable('ag')
-  " Use ag over grep
-  let g:ackprg = 'ag --vimgrep --smart-case'
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
+" FZF
+nmap <leader>p :call fzf#vim#gitfiles('', fzf#vim#with_preview('right'))<CR>
+nmap <C-p> :call fzf#vim#gitfiles('', fzf#vim#with_preview('right'))<CR>
+" nmap <C-p> :GFiles<CR>
+" nmap <leader>p :GFiles<CR>
+nmap <leader>ap :Files<CR>
+nmap <C-u> :Buffers<CR>
+nmap <leader>u :Buffers<CR>
 
 " Tagbar
 nmap <leader>t :TagbarToggle<CR>
@@ -111,3 +112,5 @@ set ttymouse=
 " JavaScript syntax
 let g:javascript_plugin_flow = 1
 
+
+let g:ale_lint_on_text_changed = 'never'
