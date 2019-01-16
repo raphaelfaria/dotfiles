@@ -45,7 +45,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-eunuch'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
-Plug 'w0rp/ale'
+" Plug 'w0rp/ale'
 
 call plug#end()
 
@@ -61,8 +61,18 @@ set nu rnu
 set ruler
 set showcmd
 set nowrap
-set cursorline
 set autoread
+set smartcase
+
+autocmd InsertEnter,InsertLeave * set cul!
+
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+augroup myCmds
+au!
+autocmd VimEnter * silent !echo -ne "\e[2 q"
+augroup END
 
 " Temp swap files
 set dir=$HOME/.vim/tmp/swap
@@ -114,3 +124,5 @@ let g:javascript_plugin_flow = 1
 
 
 let g:ale_lint_on_text_changed = 'never'
+
+" let g:ycm_show_diagnostics_ui = 0
