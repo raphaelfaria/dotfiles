@@ -3,10 +3,14 @@ call plug#begin()
 " Color scheme
 " Plug 'rakr/vim-one'
 Plug 'tomasiser/vim-code-dark'
+Plug 'morhetz/gruvbox'
 
 " TypeScript (JS via nvim-typescript tsserver instance)
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+
+" JavaScript
+Plug 'othree/yajs.vim'
 
 " Improvements
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -17,7 +21,8 @@ Plug 'scrooloose/nerdtree'
 "Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-Plug 'jiangmiao/auto-pairs'
+"Plug 'jiangmiao/auto-pairs'
+Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
 Plug 'itchyny/lightline.vim'
 
@@ -33,12 +38,14 @@ set nowrap
 set autoread
 set smartcase
 set cursorline
-colorscheme codedark
-let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+colorscheme gruvbox
+set background=dark
 filetype plugin indent on
 set tabstop=2
 set shiftwidth=2
 set expandtab
+set splitbelow
+set splitright
 
 " Temp swap files
 set dir=$HOME/.vim/tmp/swap
