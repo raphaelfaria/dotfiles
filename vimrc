@@ -32,8 +32,9 @@ Plug 'Quramy/tsuquyomi'
 Plug 'leafgarland/typescript-vim'
 Plug 'peitalin/vim-jsx-typescript'
 
-" Plug 'ctrlpvim/ctrlp.vim'
-Plug 'valloric/youcompleteme'
+"Plug 'HerringtonDarkholme/yats.vim'
+"Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/nerdtree'
 Plug 'mileszs/ack.vim'
@@ -47,12 +48,33 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'mattn/emmet-vim'
 " Plug 'w0rp/ale'
 
+Plug 'scrooloose/nerdcommenter'
+
+if has('nvim')
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+
 call plug#end()
 
 
 let g:airline_theme = 'codedark'
 let g:airline_powerline_fonts = 1
 let g:indent_guides_enable_on_vim_startup = 1
+
+let g:deoplete#enable_at_startup = 1
+" Adds <TAB> shortcut for autocomplete selection
+function! s:check_back_space() abort "{{{
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~ '\s'
+endfunction"}}}
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ deoplete#manual_complete()
 
 set encoding=utf-8
 syntax on
@@ -118,6 +140,9 @@ nmap <leader>u :Buffers<CR>
 nmap <leader>t :TagbarToggle<CR>
 set mouse=
 set ttymouse=
+
+" F5 to trim whitespaces
+nnoremap <F5> :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar><CR>
 
 " JavaScript syntax
 let g:javascript_plugin_flow = 1
