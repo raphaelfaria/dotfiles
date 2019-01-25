@@ -11,10 +11,10 @@ Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 
 " JavaScript
 Plug 'othree/yajs.vim'
+Plug 'elzr/vim-json'
 
 " Improvements
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'tpope/vim-surround'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
@@ -25,6 +25,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
 Plug 'itchyny/lightline.vim'
+Plug 'scrooloose/nerdcommenter'
 
 call plug#end()
 
@@ -47,6 +48,9 @@ set expandtab
 set splitbelow
 set splitright
 
+let mapleader = "\<Space>"
+
+nnoremap <leader><Esc> :noh<CR>
 " Temp swap files
 set dir=$HOME/.vim/tmp/swap
 if !isdirectory(&dir) | call mkdir(&dir, 'p', 0700) | endif
@@ -55,8 +59,6 @@ nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
-
-let mapleader = "\<Space>"
 
 " Deoplete config
 let g:deoplete#enable_at_startup = 1
@@ -81,6 +83,7 @@ inoremap <silent><expr> <TAB>
 " nvim-typescript
 let g:nvim_typescript#javascript_support = 1
 let g:nvim_typescript#default_mappings = 1
+" let g:nvim_typescript#diagnostics_enable = 0
 
 " fzf
 function! GetFiles()
@@ -99,3 +102,6 @@ nmap <leader>t :BTags<CR>
 
 " NERDTree
 nmap <C-b> :NERDTreeToggle<CR>
+
+" indentline
+let g:indentLine_fileTypeExclude = ['json']
