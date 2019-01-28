@@ -13,6 +13,9 @@ Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 Plug 'othree/yajs.vim'
 Plug 'elzr/vim-json'
 
+" C++
+Plug 'octol/vim-cpp-enhanced-highlight'
+
 " Improvements
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
@@ -26,6 +29,7 @@ Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
 Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/nerdcommenter'
+Plug 'w0rp/ale'
 
 call plug#end()
 
@@ -47,10 +51,21 @@ set shiftwidth=2
 set expandtab
 set splitbelow
 set splitright
+set scrolloff=8
 
 let mapleader = "\<Space>"
 
-nnoremap <leader><Esc> :noh<CR>
+" clipboard
+" copy
+noremap <C-c> "+y
+" paste
+noremap <C-v> "+p
+" cut
+noremap <C-x> "+d
+" paste in insert mode
+inoremap <C-v> <Esc>"+pa
+
+nnoremap <silent> <leader><Esc> :noh<CR>
 " Temp swap files
 set dir=$HOME/.vim/tmp/swap
 if !isdirectory(&dir) | call mkdir(&dir, 'p', 0700) | endif
@@ -86,22 +101,35 @@ let g:nvim_typescript#default_mappings = 1
 " let g:nvim_typescript#diagnostics_enable = 0
 
 " fzf
-function! GetFiles()
-  if isdirectory('./.git')
-    GFiles
-  else
-    Files
-  endif
-endfunction
-
 nmap <C-S-F> :Ag<space>
-nmap <C-p> :call GetFiles()<CR>
 nmap <C-u> :Buffers<CR>
 nmap <leader>ap :Files<CR>
 nmap <leader>t :BTags<CR>
+
+command! -bang -nargs=? -complete=dir Files
+  \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+command! -bang -nargs=? -complete=dir GFiles
+  \ call fzf#vim#gitfiles(<q-args>, fzf#vim#with_preview(), <bang>0)
+
+if isdirectory('./.git')
+  " GFiles
+  nmap <C-p> :GFiles<CR>
+else
+  " Files
+  nmap <C-p> :Files<CR>
+endif
+
 
 " NERDTree
 nmap <C-b> :NERDTreeToggle<CR>
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json']
+
+" ALE
+let g:ale_linters = { 
+\'javascript': ['eslint'],
+\'typescript': ['tslint']
+\}
+let g:ale_sign_column_always = 1
