@@ -37,6 +37,9 @@ Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
+" Go
+Plug 'zchee/deoplete-go', { 'do': 'make'}
+
 call plug#end()
 
 " Editor config
