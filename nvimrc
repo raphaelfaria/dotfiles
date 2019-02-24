@@ -2,15 +2,19 @@ call plug#begin()
 
 " Color scheme
 " Plug 'rakr/vim-one'
-Plug 'tomasiser/vim-code-dark'
+" Plug 'altercation/vim-colors-solarized'
+" Plug 'tomasiser/vim-code-dark'
 Plug 'morhetz/gruvbox'
 
 " TypeScript (JS via nvim-typescript tsserver instance)
 Plug 'HerringtonDarkholme/yats.vim'
 Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+Plug 'peitalin/vim-jsx-typescript'
 
 " JavaScript
-Plug 'othree/yajs.vim'
+" Plug 'othree/yajs.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 Plug 'elzr/vim-json'
 
 " C++
@@ -30,21 +34,22 @@ Plug 'yggdroot/indentline'
 Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'w0rp/ale'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
 " Editor config
 set encoding=utf-8
-syntax on
 set nu rnu
 set ruler
 set showcmd
 set nowrap
 set autoread
+au CursorHold * checktime
+set ignorecase
 set smartcase
 set cursorline
-colorscheme gruvbox
-set background=dark
 filetype plugin indent on
 set tabstop=2
 set shiftwidth=2
@@ -52,6 +57,11 @@ set expandtab
 set splitbelow
 set splitright
 set scrolloff=8
+
+" Syntax Color
+syntax on
+colorscheme gruvbox
+set background=dark
 
 let mapleader = "\<Space>"
 
@@ -66,14 +76,19 @@ noremap <C-x> "+d
 inoremap <C-v> <Esc>"+pa
 
 nnoremap <silent> <leader><Esc> :noh<CR>
+"
 " Temp swap files
 set dir=$HOME/.vim/tmp/swap
 if !isdirectory(&dir) | call mkdir(&dir, 'p', 0700) | endif
 
+" Splits navigation
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
+
+" Close all buffers
+nnoremap <leader>bda :%bd<CR>
 
 " Deoplete config
 let g:deoplete#enable_at_startup = 1
@@ -123,6 +138,8 @@ endif
 
 " NERDTree
 nmap <C-b> :NERDTreeToggle<CR>
+" close vim if only NERDTree is open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json']
@@ -130,6 +147,8 @@ let g:indentLine_fileTypeExclude = ['json']
 " ALE
 let g:ale_linters = { 
 \'javascript': ['eslint'],
-\'typescript': ['tslint']
+\'javascript.jsx': ['eslint'],
+\'typescript': ['tslint'],
+\'typescript.tsx': ['tslint']
 \}
 let g:ale_sign_column_always = 1
