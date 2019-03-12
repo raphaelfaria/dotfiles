@@ -8,7 +8,7 @@ Plug 'morhetz/gruvbox'
 
 " TypeScript (JS via nvim-typescript tsserver instance)
 Plug 'HerringtonDarkholme/yats.vim'
-Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
+"Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
 Plug 'peitalin/vim-jsx-typescript'
 
 " JavaScript
@@ -20,11 +20,16 @@ Plug 'elzr/vim-json'
 " C++
 Plug 'octol/vim-cpp-enhanced-highlight'
 
+" Markdown
+Plug 'plasticboy/vim-markdown'
+
 " Improvements
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
-Plug 'scrooloose/nerdtree'
+"Plug 'scrooloose/nerdtree'
+Plug 'tpope/vim-vinegar'
 "Plug 'ryanoasis/vim-devicons'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
@@ -33,12 +38,12 @@ Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
 Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/nerdcommenter'
-Plug 'w0rp/ale'
+"Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 
 " Go
-Plug 'zchee/deoplete-go', { 'do': 'make'}
+"Plug 'zchee/deoplete-go', { 'do': 'make'}
 
 call plug#end()
 
@@ -60,6 +65,7 @@ set expandtab
 set splitbelow
 set splitright
 set scrolloff=8
+set signcolumn=yes
 
 " Syntax Color
 syntax on
@@ -93,25 +99,27 @@ nnoremap <C-H> <C-W><C-H>
 " Close all buffers
 nnoremap <leader>bda :%bd<CR>
 
-" Deoplete config
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_at_startup = 1
-let g:deoplete#enable_ignore_case = 1
-let g:deoplete#enable_smart_case = 1
-let g:deoplete#enable_camel_case = 1
-let g:deoplete#enable_refresh_always = 1
-
 " Adds <TAB> shortcut for autocomplete selection                                                                                      
 function! s:check_back_space() abort "{{{
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction"}}}
 
+function! s:trigger_complete()
+  "deoplete#manual_complete()
+  coc#refresh()
+endfunction
+
 inoremap <silent><expr> <TAB>
       \ pumvisible() ? "\<C-n>" :
       \ <SID>check_back_space() ? "\<TAB>" :
-      \ deoplete#manual_complete()     
+      \ <SID>trigger_complete()
 
+" Remap keys for gotos
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
 
 " nvim-typescript
 let g:nvim_typescript#javascript_support = 1
@@ -138,20 +146,11 @@ else
   nmap <C-p> :Files<CR>
 endif
 
-
-" NERDTree
-nmap <C-b> :NERDTreeToggle<CR>
-" close vim if only NERDTree is open
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+" netrw
+let g:netrw_liststyle = 3
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json']
 
-" ALE
-let g:ale_linters = { 
-\'javascript': ['eslint'],
-\'javascript.jsx': ['eslint'],
-\'typescript': ['tslint'],
-\'typescript.tsx': ['tslint']
-\}
-let g:ale_sign_column_always = 1
+" Markdown
+let g:vim_markdown_conceal = 0
