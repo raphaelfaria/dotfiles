@@ -9,7 +9,8 @@ Plug 'morhetz/gruvbox'
 " TypeScript (JS via nvim-typescript tsserver instance)
 Plug 'HerringtonDarkholme/yats.vim'
 "Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
-Plug 'peitalin/vim-jsx-typescript'
+"Plug 'peitalin/vim-jsx-typescript'
+Plug 'leafgarland/typescript-vim'
 
 " JavaScript
 " Plug 'othree/yajs.vim'
@@ -28,19 +29,22 @@ Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
 "Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
-"Plug 'scrooloose/nerdtree'
-Plug 'tpope/vim-vinegar'
-"Plug 'ryanoasis/vim-devicons'
+Plug 'scrooloose/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+"Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 "Plug 'jiangmiao/auto-pairs'
 Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
+Plug 'terryma/vim-multiple-cursors'
 Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/nerdcommenter'
 "Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
+Plug 'rizzatti/dash.vim'
 
 " Go
 "Plug 'zchee/deoplete-go', { 'do': 'make'}
@@ -99,6 +103,8 @@ nnoremap <C-H> <C-W><C-H>
 " Close all buffers
 nnoremap <leader>bda :%bd<CR>
 
+
+" COC NVIM
 " Adds <TAB> shortcut for autocomplete selection                                                                                      
 function! s:check_back_space() abort "{{{
   let col = col('.') - 1
@@ -115,19 +121,32 @@ inoremap <silent><expr> <TAB>
       \ <SID>check_back_space() ? "\<TAB>" :
       \ <SID>trigger_complete()
 
+" Use `[c` and `]c` for navigate diagnostics
+nmap <silent> [c <Plug>(coc-diagnostic-prev)
+nmap <silent> ]c <Plug>(coc-diagnostic-next)
+
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
 nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" nvim-typescript
-let g:nvim_typescript#javascript_support = 1
-let g:nvim_typescript#default_mappings = 1
-" let g:nvim_typescript#diagnostics_enable = 0
+" Use K for show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if &filetype == 'vim'
+    execute 'h '.expand('<cword>')
+  else
+    call CocAction('doHover')
+  endif
+endfunction
+
+" Remap for rename current word
+nmap <leader>rn <Plug>(coc-rename)
 
 " fzf
-nmap <C-S-F> :Ag<space>
+nmap <C-F> :Ag<space>
 nmap <C-u> :Buffers<CR>
 nmap <leader>ap :Files<CR>
 nmap <leader>t :BTags<CR>
@@ -140,17 +159,46 @@ command! -bang -nargs=? -complete=dir GFiles
 
 if isdirectory('./.git')
   " GFiles
-  nmap <C-p> :GFiles<CR>
+  nmap <C-p> :GFiles --exclude-standard --others --cached \| sort -d<CR>
 else
   " Files
   nmap <C-p> :Files<CR>
 endif
 
-" netrw
-let g:netrw_liststyle = 3
+" NERDTree
+nmap <C-b> :NERDTreeToggle<CR>
+nmap <leader>b :NERDTreeFind<CR>
+" close vim if only NERDTree is open
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json']
 
 " Markdown
 let g:vim_markdown_conceal = 0
+
+" VIM Devicons
+let g:WebDevIconsOS = 'Darwin'
+
+let g:NERDTreeHighlightCursorline = 0 " prevents lag on nerdtree caused by coloring icons ('tiagofumo/vim-nerdtree-syntax-highlight')
+
+
+set noshowmode
+let g:lightline = {
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'cocstatus', 'readonly', 'relativepath', 'modified' ] ]
+      \ },
+      \ 'inactive': {
+      \   'left': [ ['relativepath'] ]
+      \ },
+      \ 'component_function': {
+      \   'cocstatus': 'coc#status'
+      \ },
+      \ }
+
+
+" DASH
+nmap <silent> <leader>d <Plug>DashSearch
+nmap <C-D> :Dash<space>
