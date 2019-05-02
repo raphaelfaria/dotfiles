@@ -5,6 +5,7 @@ call plug#begin()
 " Plug 'altercation/vim-colors-solarized'
 " Plug 'tomasiser/vim-code-dark'
 Plug 'morhetz/gruvbox'
+Plug 'arcticicestudio/nord-vim'
 
 " TypeScript (JS via nvim-typescript tsserver instance)
 Plug 'HerringtonDarkholme/yats.vim'
@@ -73,8 +74,12 @@ set signcolumn=yes
 
 " Syntax Color
 syntax on
-colorscheme gruvbox
-set background=dark
+colorscheme nord
+"set background=dark
+let g:nord_italic = 1
+let g:nord_italic_comments = 1
+let g:nord_cursor_line_number_background = 1
+
 
 let mapleader = "\<Space>"
 
@@ -185,7 +190,7 @@ let g:NERDTreeHighlightCursorline = 0 " prevents lag on nerdtree caused by color
 
 set noshowmode
 let g:lightline = {
-      \ 'colorscheme': 'wombat',
+      \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'cocstatus', 'readonly', 'relativepath', 'modified' ] ]
