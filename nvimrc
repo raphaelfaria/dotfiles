@@ -19,6 +19,9 @@ Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 Plug 'elzr/vim-json'
 
+" HTML
+Plug 'mattn/emmet-vim'
+
 " C++
 Plug 'octol/vim-cpp-enhanced-highlight'
 
@@ -46,6 +49,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'rizzatti/dash.vim'
+Plug 'ntpeters/vim-better-whitespace'
 
 " Go
 "Plug 'zchee/deoplete-go', { 'do': 'make'}
@@ -75,11 +79,11 @@ set signcolumn=yes
 " Syntax Color
 syntax on
 colorscheme nord
+highlight Comment cterm=italic
 "set background=dark
 let g:nord_italic = 1
 let g:nord_italic_comments = 1
 let g:nord_cursor_line_number_background = 1
-
 
 let mapleader = "\<Space>"
 
@@ -94,6 +98,10 @@ noremap <C-x> "+d
 inoremap <C-v> <Esc>"+pa
 
 nnoremap <silent> <leader><Esc> :noh<CR>
+
+let g:better_whitespace_enabled = 1
+let g:strip_whitespace_on_save = 1
+
 "
 " Temp swap files
 set dir=$HOME/.vim/tmp/swap
@@ -110,7 +118,7 @@ nnoremap <leader>bda :%bd<CR>
 
 
 " COC NVIM
-" Adds <TAB> shortcut for autocomplete selection                                                                                      
+" Adds <TAB> shortcut for autocomplete selection
 function! s:check_back_space() abort "{{{
   let col = col('.') - 1
   return !col || getline('.')[col - 1]  =~ '\s'
@@ -178,6 +186,8 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json']
+
+let g:vim_json_syntax_conceal = 0
 
 " Markdown
 let g:vim_markdown_conceal = 0
