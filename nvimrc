@@ -7,26 +7,7 @@ call plug#begin()
 Plug 'morhetz/gruvbox'
 Plug 'arcticicestudio/nord-vim'
 
-" TypeScript (JS via nvim-typescript tsserver instance)
-Plug 'HerringtonDarkholme/yats.vim'
-"Plug 'mhartington/nvim-typescript', {'do': './install.sh'}
-"Plug 'peitalin/vim-jsx-typescript'
-Plug 'leafgarland/typescript-vim'
-
-" JavaScript
-" Plug 'othree/yajs.vim'
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-Plug 'elzr/vim-json'
-
-" HTML
-Plug 'mattn/emmet-vim'
-
-" C++
-Plug 'octol/vim-cpp-enhanced-highlight'
-
-" Markdown
-Plug 'plasticboy/vim-markdown'
+Plug 'sheerun/vim-polyglot'
 
 " Improvements
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
@@ -80,12 +61,19 @@ set signcolumn=yes
 syntax on
 colorscheme nord
 highlight Comment cterm=italic
-"set background=dark
+
 let g:nord_italic = 1
 let g:nord_italic_comments = 1
 let g:nord_cursor_line_number_background = 1
 
 let mapleader = "\<Space>"
+
+function! OpenNewPaneTerminal()
+  execute "split"
+  execute "terminal"
+endfunction
+
+nnoremap <leader>t :call OpenNewPaneTerminal()<CR>
 
 " clipboard
 " copy
@@ -115,24 +103,12 @@ nnoremap <C-H> <C-W><C-H>
 
 " Close all buffers
 nnoremap <leader>bda :%bd<CR>
+nnoremap <leader>q :%bd<CR>
 
 
 " COC NVIM
-" Adds <TAB> shortcut for autocomplete selection
-function! s:check_back_space() abort "{{{
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction"}}}
-
-function! s:trigger_complete()
-  "deoplete#manual_complete()
-  coc#refresh()
-endfunction
-
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ <SID>trigger_complete()
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 " Use `[c` and `]c` for navigate diagnostics
 nmap <silent> [c <Plug>(coc-diagnostic-prev)
@@ -144,9 +120,6 @@ nmap <silent> gy <Plug>(coc-type-definition)
 nmap <silent> gi <Plug>(coc-implementation)
 nmap <silent> gr <Plug>(coc-references)
 
-" Use K for show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
 function! s:show_documentation()
   if &filetype == 'vim'
     execute 'h '.expand('<cword>')
@@ -155,14 +128,17 @@ function! s:show_documentation()
   endif
 endfunction
 
+" Use K for show documentation in preview window
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
+
 
 " fzf
 nmap <C-F> :Ag<space>
 nmap <C-u> :Buffers<CR>
 nmap <leader>ap :Files<CR>
-nmap <leader>t :BTags<CR>
 
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
@@ -197,19 +173,23 @@ let g:WebDevIconsOS = 'Darwin'
 
 let g:NERDTreeHighlightCursorline = 0 " prevents lag on nerdtree caused by coloring icons ('tiagofumo/vim-nerdtree-syntax-highlight')
 
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
 
 set noshowmode
 let g:lightline = {
       \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'readonly', 'relativepath', 'modified' ] ]
+      \             [ 'cocstatus', 'currentfunction', 'readonly', 'relativepath', 'modified' ] ]
       \ },
       \ 'inactive': {
       \   'left': [ ['relativepath'] ]
       \ },
       \ 'component_function': {
-      \   'cocstatus': 'coc#status'
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction'
       \ },
       \ }
 
@@ -217,3 +197,16 @@ let g:lightline = {
 " DASH
 nmap <silent> <leader>d <Plug>DashSearch
 nmap <C-D> :Dash<space>
+
+" Tabs
+nnoremap <C-t>k :tabr<cr>
+nnoremap <C-t>j :tabl<cr>
+nnoremap <C-t>h :tabp<cr>
+nnoremap <C-t>l :tabn<cr>
+nnoremap <C-t><C-k> :tabr<cr>
+nnoremap <C-t><C-j> :tabl<cr>
+nnoremap <C-t><C-h> :tabp<cr>
+nnoremap <C-t><C-l> :tabn<cr>
+nnoremap <C-t><C-s> :tabs<cr>
+nnoremap <C-t><C-n> :tabnew<cr>
+nnoremap <C-t><C-w> :tabc<cr>
