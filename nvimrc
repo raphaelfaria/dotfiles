@@ -1,17 +1,12 @@
 call plug#begin()
 
 " Color scheme
-" Plug 'rakr/vim-one'
-" Plug 'altercation/vim-colors-solarized'
-" Plug 'tomasiser/vim-code-dark'
-Plug 'morhetz/gruvbox'
 Plug 'arcticicestudio/nord-vim'
 
 Plug 'sheerun/vim-polyglot'
 
 " Improvements
 Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
-"Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
 Plug 'scrooloose/nerdtree'
@@ -107,6 +102,9 @@ nnoremap <leader>q :%bd<CR>
 
 
 " COC NVIM
+
+let g:coc_global_extensions = [ 'coc-ccls', 'coc-css', 'coc-eslint', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json' ]
+
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
