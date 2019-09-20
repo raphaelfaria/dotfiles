@@ -6,29 +6,25 @@ Plug 'arcticicestudio/nord-vim'
 Plug 'sheerun/vim-polyglot'
 
 " Improvements
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': { -> coc#util#install()}}
+Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
+Plug 'mattn/emmet-vim'
 Plug 'scrooloose/nerdtree'
 Plug 'ryanoasis/vim-devicons'
 Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-"Plug 'tpope/vim-vinegar'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
-"Plug 'jiangmiao/auto-pairs'
+Plug 'tpope/vim-fugitive'
 Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'itchyny/lightline.vim'
 Plug 'scrooloose/nerdcommenter'
-"Plug 'w0rp/ale'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
 Plug 'rizzatti/dash.vim'
 Plug 'ntpeters/vim-better-whitespace'
-
-" Go
-"Plug 'zchee/deoplete-go', { 'do': 'make'}
+Plug 'reekenx/vim-rename2'
+Plug 'mattn/emmet-vim'
 
 call plug#end()
 
@@ -52,10 +48,27 @@ set splitright
 set scrolloff=8
 set signcolumn=yes
 
+" Creates parent directories on save (from: https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save)
+function s:MkNonExDir(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+        let dir=fnamemodify(a:file, ':h')
+        if !isdirectory(dir)
+            call mkdir(dir, 'p')
+        endif
+    endif
+endfunction
+augroup BWCCreateDir
+    autocmd!
+    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+  augroup END
+
 " Syntax Color
 syntax on
 colorscheme nord
 highlight Comment cterm=italic
+
+set undofile
+set undodir=~/.config/nvim/undodir
 
 let g:nord_italic = 1
 let g:nord_italic_comments = 1
@@ -80,6 +93,9 @@ noremap <C-x> "+d
 " paste in insert mode
 inoremap <C-v> <Esc>"+pa
 
+nmap n nzz
+nmap N Nzz
+
 nnoremap <silent> <leader><Esc> :noh<CR>
 
 let g:better_whitespace_enabled = 1
@@ -103,14 +119,23 @@ nnoremap <leader>q :%bd<CR>
 
 " COC NVIM
 
-let g:coc_global_extensions = [ 'coc-ccls', 'coc-css', 'coc-eslint', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json' ]
+let g:coc_global_extensions = [ 'coc-ccls', 'coc-css', 'coc-eslint', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git' ]
 
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-" Use `[c` and `]c` for navigate diagnostics
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
+nnoremap <silent> <leader>o :<C-u>CocList outline<cr>
+nnoremap <silent> <leader>s  :<C-u>CocList -I symbols<cr>
+nnoremap <silent> <leader>a  :<C-u>CocList diagnostics<cr>
+
+" Use `[c` and `]c` for navigate diagnostics errors
+nmap <silent> [c <Plug>(coc-diagnostic-prev-error)
+nmap <silent> ]c <Plug>(coc-diagnostic-next-error)
+
+" Use `[v` and `]v` for navigate diagnostics
+nmap <silent> [v <Plug>(coc-diagnostic-prev)
+nmap <silent> ]v <Plug>(coc-diagnostic-next)
+
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -132,11 +157,23 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
 
-
+"somethingunique
 " fzf
+
+" Default options are --nogroup --column --color
+let s:ag_options = ' --one-device --hidden --ignore .git'
+
+command! -bang -nargs=* Ag
+      \ call fzf#vim#ag(
+      \   <q-args>,
+      \   s:ag_options,
+      \  <bang>0 ? fzf#vim#with_preview('up:60%')
+      \        : fzf#vim#with_preview('right:50%:hidden', '?'),
+      \   <bang>0
+      \ )
 nmap <C-F> :Ag<space>
 nmap <C-u> :Buffers<CR>
-nmap <leader>ap :Files<CR>
+nmap <leader>p :Files<CR>
 
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
@@ -157,6 +194,7 @@ nmap <C-b> :NERDTreeToggle<CR>
 nmap <leader>b :NERDTreeFind<CR>
 " close vim if only NERDTree is open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+let NERDTreeShowHidden = 1
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json']
@@ -208,3 +246,6 @@ nnoremap <C-t><C-l> :tabn<cr>
 nnoremap <C-t><C-s> :tabs<cr>
 nnoremap <C-t><C-n> :tabnew<cr>
 nnoremap <C-t><C-w> :tabc<cr>
+
+" NERDCommenter
+let g:NERDSpaceDelims = 1
