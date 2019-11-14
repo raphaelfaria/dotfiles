@@ -1,12 +1,20 @@
+if empty(glob('~/.local/share/nvim/site/autoload/plug.vim'))
+  silent !curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+
 call plug#begin()
 
 " Color scheme
-Plug 'arcticicestudio/nord-vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 Plug 'sheerun/vim-polyglot'
 
 " Improvements
 Plug 'neoclide/coc.nvim', { 'branch': 'release' }
+" Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
 Plug 'mattn/emmet-vim'
@@ -20,11 +28,18 @@ Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'itchyny/lightline.vim'
+" Plug 'maximbaz/lightline-ale'
 Plug 'scrooloose/nerdcommenter'
 Plug 'rizzatti/dash.vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'reekenx/vim-rename2'
 Plug 'mattn/emmet-vim'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'bkad/CamelCaseMotion'
+Plug 'pseewald/vim-anyfold'
+Plug 'terryma/vim-expand-region'
+Plug 'chrisbra/Colorizer'
+Plug 'junegunn/vim-easy-align'
 
 call plug#end()
 
@@ -48,6 +63,9 @@ set splitright
 set scrolloff=8
 set signcolumn=yes
 
+autocmd Filetype * AnyFoldActivate
+set foldlevel=99
+
 " Creates parent directories on save (from: https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save)
 function s:MkNonExDir(file, buf)
     if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
@@ -64,15 +82,17 @@ augroup BWCCreateDir
 
 " Syntax Color
 syntax on
-colorscheme nord
+colorscheme dracula
+set termguicolors
 highlight Comment cterm=italic
+let s:term_true_color = 1
 
 set undofile
 set undodir=~/.config/nvim/undodir
 
-let g:nord_italic = 1
-let g:nord_italic_comments = 1
-let g:nord_cursor_line_number_background = 1
+" let g:nord_italic = 1
+" let g:nord_italic_comments = 1
+" let g:nord_cursor_line_number_background = 1
 
 let mapleader = "\<Space>"
 
@@ -82,6 +102,7 @@ function! OpenNewPaneTerminal()
 endfunction
 
 nnoremap <leader>t :call OpenNewPaneTerminal()<CR>
+tnoremap <C-d> <C-\><C-n>
 
 " clipboard
 " copy
@@ -92,6 +113,9 @@ noremap <C-v> "+p
 noremap <C-x> "+d
 " paste in insert mode
 inoremap <C-v> <Esc>"+pa
+
+let g:colorizer_auto_map = 1
+" let g:colorizer_use_virtual_text = 1
 
 nmap n nzz
 nmap N Nzz
@@ -119,7 +143,19 @@ nnoremap <leader>q :%bd<CR>
 
 " COC NVIM
 
-let g:coc_global_extensions = [ 'coc-ccls', 'coc-css', 'coc-eslint', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git' ]
+let g:coc_global_extensions = [ 'coc-css', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-eslint', 'coc-stylelint']
+
+" Run jest for current project
+command! -nargs=0 Jest :call  CocAction('runCommand', 'jest.projectTest')
+
+" Run jest for current file
+command! -nargs=0 JestCurrent :call  CocAction('runCommand', 'jest.fileTest', ['%'])
+
+" Run jest for current test
+nnoremap <leader>te :call CocAction('runCommand', 'jest.singleTest')<CR>
+
+" Init jest in current cwd, require global jest command exists
+command! JestInit :call CocAction('runCommand', 'jest.init')
 
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
@@ -129,13 +165,20 @@ nnoremap <silent> <leader>s  :<C-u>CocList -I symbols<cr>
 nnoremap <silent> <leader>a  :<C-u>CocList diagnostics<cr>
 
 " Use `[c` and `]c` for navigate diagnostics errors
+" nmap <silent> [c <Plug>(ale_previous_wrap_error)
+" nmap <silent> ]c <Plug>(ale_next_wrap_error)
+
+" Use `[v` and `]v` for navigate diagnostics
+" nmap <silent> [v <Plug>(ale_previous_wrap)
+" nmap <silent> ]v <Plug>(ale_next_wrap)
+
+" Use `[c` and `]c` for navigate diagnostics errors
 nmap <silent> [c <Plug>(coc-diagnostic-prev-error)
 nmap <silent> ]c <Plug>(coc-diagnostic-next-error)
 
 " Use `[v` and `]v` for navigate diagnostics
 nmap <silent> [v <Plug>(coc-diagnostic-prev)
 nmap <silent> ]v <Plug>(coc-diagnostic-next)
-
 
 " Remap keys for gotos
 nmap <silent> gd <Plug>(coc-definition)
@@ -157,7 +200,25 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
 
-"somethingunique
+
+" ALE
+
+" let g:ale_set_balloons = 1
+" let g:ale_linter_aliases = {
+  " \ 'typescript': ['css', 'typescript', 'typescriptreact'],
+  " \ 'javascript': ['css', 'javascript', 'javascriptreact']
+  " \ }
+
+" let g:ale_fixers = {
+  " \ 'javascript': ['eslint', 'stylelint'],
+  " \ 'typescript': ['eslint', 'stylelint']
+  " \ }
+
+" let g:ale_linters = {
+  " \ 'javascript': ['eslint', 'stylelint'],
+  " \ 'typescript': ['eslint', 'stylelint']
+  " \ }
+
 " fzf
 
 " Default options are --nogroup --column --color
@@ -191,18 +252,19 @@ endif
 
 " NERDTree
 nmap <C-b> :NERDTreeToggle<CR>
-nmap <leader>b :NERDTreeFind<CR>
+nmap <leader>tf :NERDTreeFind<CR>
 " close vim if only NERDTree is open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let NERDTreeShowHidden = 1
 
 " indentline
-let g:indentLine_fileTypeExclude = ['json']
+let g:indentLine_fileTypeExclude = ['json', 'markdown']
 
 let g:vim_json_syntax_conceal = 0
 
 " Markdown
 let g:vim_markdown_conceal = 0
+let g:indentLine_conceallevel = 0
 
 " VIM Devicons
 let g:WebDevIconsOS = 'Darwin'
@@ -215,7 +277,7 @@ endfunction
 
 set noshowmode
 let g:lightline = {
-      \ 'colorscheme': 'nord',
+      \ 'colorscheme': 'dracula',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'cocstatus', 'currentfunction', 'readonly', 'relativepath', 'modified' ] ]
@@ -229,6 +291,34 @@ let g:lightline = {
       \ },
       \ }
 
+" let g:lightline = {
+      " \ 'colorscheme': 'dracula',
+      " \ 'active': {
+      " \   'left': [ [ 'mode', 'paste', 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+      " \             [ 'currentfunction', 'readonly', 'relativepath', 'modified' ] ],
+      " \ },
+      " \ 'inactive': {
+      " \   'left': [ [], ['relativepath'] ]
+      " \ },
+      " \ 'component_type': {
+      " \     'linter_checking': 'left',
+      " \     'linter_warnings': 'warning',
+      " \     'linter_errors': 'error',
+      " \     'linter_ok': 'left',
+      " \ },
+      " \ 'component_function': {
+      " \   'linter_checking': 'lightline#ale#checking',
+      " \   'linter_warnings': 'lightline#ale#warnings',
+      " \   'linter_errors': 'lightline#ale#errors',
+      " \   'linter_ok': 'lightline#ale#ok',
+      " \   'currentfunction': 'CocCurrentFunction'
+      " \ },
+      " \ }
+
+" let g:lightline#ale#indicator_checking = "\uf110"
+" let g:lightline#ale#indicator_warnings = "\uf071"
+" let g:lightline#ale#indicator_errors = "\uf05e"
+" let g:lightline#ale#indicator_ok = "\uf00c"
 
 " DASH
 nmap <silent> <leader>d <Plug>DashSearch
@@ -249,3 +339,12 @@ nnoremap <C-t><C-w> :tabc<cr>
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
+
+" CamelCaseMotion
+let g:camelcasemotion_key = '<leader>'
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
