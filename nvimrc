@@ -24,6 +24,7 @@ Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-abolish'
 Plug 'cohama/lexima.vim'
 Plug 'yggdroot/indentline'
 Plug 'terryma/vim-multiple-cursors'
@@ -62,6 +63,10 @@ set splitbelow
 set splitright
 set scrolloff=8
 set signcolumn=yes
+set mouse=a
+
+map <ScrollWheelDown> j
+map <ScrollWheelUp> k
 
 autocmd Filetype * AnyFoldActivate
 set foldlevel=99
@@ -143,7 +148,7 @@ nnoremap <leader>q :%bd<CR>
 
 " COC NVIM
 
-let g:coc_global_extensions = [ 'coc-css', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-eslint', 'coc-stylelint']
+let g:coc_global_extensions = [ 'coc-css', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-eslint', 'coc-stylelint', 'coc-rls', 'coc-omnisharp' ]
 
 " Run jest for current project
 command! -nargs=0 Jest :call  CocAction('runCommand', 'jest.projectTest')
@@ -200,24 +205,6 @@ nnoremap <silent> K :call <SID>show_documentation()<CR>
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)
 
-
-" ALE
-
-" let g:ale_set_balloons = 1
-" let g:ale_linter_aliases = {
-  " \ 'typescript': ['css', 'typescript', 'typescriptreact'],
-  " \ 'javascript': ['css', 'javascript', 'javascriptreact']
-  " \ }
-
-" let g:ale_fixers = {
-  " \ 'javascript': ['eslint', 'stylelint'],
-  " \ 'typescript': ['eslint', 'stylelint']
-  " \ }
-
-" let g:ale_linters = {
-  " \ 'javascript': ['eslint', 'stylelint'],
-  " \ 'typescript': ['eslint', 'stylelint']
-  " \ }
 
 " fzf
 
