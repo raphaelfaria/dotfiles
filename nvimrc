@@ -8,7 +8,9 @@ endif
 call plug#begin()
 
 " Color scheme
-Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'dracula/vim', { 'as': 'dracula' }
+Plug 'skielbasa/vim-material-monokai'
+Plug 'anthillape/lightline-material-monokai'
 
 Plug 'sheerun/vim-polyglot'
 
@@ -87,10 +89,16 @@ augroup BWCCreateDir
 
 " Syntax Color
 syntax on
-colorscheme dracula
+
+set background=dark
 set termguicolors
+colorscheme material-monokai
+
 highlight Comment cterm=italic
 let s:term_true_color = 1
+
+let g:materialmonokai_italic=1
+let g:materialmonokai_subtle_spell=1
 
 set undofile
 set undodir=~/.config/nvim/undodir
@@ -148,7 +156,7 @@ nnoremap <leader>q :%bd<CR>
 
 " COC NVIM
 
-let g:coc_global_extensions = [ 'coc-css', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-eslint', 'coc-stylelint', 'coc-rls', 'coc-omnisharp' ]
+let g:coc_global_extensions = [ 'coc-css', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-eslint', 'coc-stylelint', 'coc-rls', 'coc-omnisharp', 'coc-sourcekit' ]
 
 " Run jest for current project
 command! -nargs=0 Jest :call  CocAction('runCommand', 'jest.projectTest')
@@ -246,8 +254,12 @@ let NERDTreeShowHidden = 1
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json', 'markdown']
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
 
 let g:vim_json_syntax_conceal = 0
+set conceallevel=1
+let g:indentLine_conceallevel=1
+autocmd VimEnter,WinEnter,BufNewFile,BufRead,BufEnter,TabEnter * IndentLinesReset
 
 " Markdown
 let g:vim_markdown_conceal = 0
@@ -264,7 +276,7 @@ endfunction
 
 set noshowmode
 let g:lightline = {
-      \ 'colorscheme': 'dracula',
+      \ 'colorscheme': 'monokai_material',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'cocstatus', 'currentfunction', 'readonly', 'relativepath', 'modified' ] ]
