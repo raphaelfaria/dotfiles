@@ -8,9 +8,9 @@ endif
 call plug#begin()
 
 " Color scheme
-" Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'skielbasa/vim-material-monokai'
-Plug 'anthillape/lightline-material-monokai'
+Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'skielbasa/vim-material-monokai'
+" Plug 'anthillape/lightline-material-monokai'
 
 Plug 'sheerun/vim-polyglot'
 
@@ -91,11 +91,17 @@ augroup BWCCreateDir
 syntax on
 
 set background=dark
-set termguicolors
-colorscheme material-monokai
+
+let colorterm=$COLORTERM
+
+if colorterm =~# 'truecolor' || colorterm =~# '24bit'
+  set termguicolors
+  let s:term_true_color = 1
+endif
+
+colorscheme dracula
 
 highlight Comment cterm=italic
-let s:term_true_color = 1
 
 let g:materialmonokai_italic=1
 let g:materialmonokai_subtle_spell=1
@@ -156,7 +162,7 @@ nnoremap <leader>q :%bd<CR>
 
 " COC NVIM
 
-let g:coc_global_extensions = [ 'coc-css', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-eslint', 'coc-stylelint', 'coc-rls', 'coc-omnisharp', 'coc-sourcekit' ]
+let g:coc_global_extensions = [ 'coc-css', 'coc-gocode', 'coc-jest', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-eslint', 'coc-stylelint', 'coc-rust-analyzer', 'coc-omnisharp', 'coc-sourcekit' ]
 
 " Run jest for current project
 command! -nargs=0 Jest :call  CocAction('runCommand', 'jest.projectTest')
@@ -173,7 +179,9 @@ command! JestInit :call CocAction('runCommand', 'jest.init')
 inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-nnoremap <silent> <leader>o :<C-u>CocList outline<cr>
+nnoremap <silent> <leader>oo :<C-u>CocList outline<cr>
+nnoremap <silent> <leader>om :<C-u>CocList outline -k Method<cr>
+nnoremap <silent> <leader>of :<C-u>CocList outline -k Function<cr>
 nnoremap <silent> <leader>s  :<C-u>CocList -I symbols<cr>
 nnoremap <silent> <leader>a  :<C-u>CocList diagnostics<cr>
 
@@ -275,49 +283,49 @@ function! CocCurrentFunction()
 endfunction
 
 set noshowmode
-let g:lightline = {
-      \ 'colorscheme': 'monokai_material',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'cocstatus', 'currentfunction', 'readonly', 'relativepath', 'modified' ] ]
-      \ },
-      \ 'inactive': {
-      \   'left': [ ['relativepath'] ]
-      \ },
-      \ 'component_function': {
-      \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction'
-      \ },
-      \ }
-
 " let g:lightline = {
       " \ 'colorscheme': 'dracula',
       " \ 'active': {
-      " \   'left': [ [ 'mode', 'paste', 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
-      " \             [ 'currentfunction', 'readonly', 'relativepath', 'modified' ] ],
+      " \   'left': [ [ 'mode', 'paste' ],
+      " \             [ 'cocstatus', 'currentfunction', 'readonly', 'relativepath', 'modified' ] ]
       " \ },
       " \ 'inactive': {
-      " \   'left': [ [], ['relativepath'] ]
-      " \ },
-      " \ 'component_type': {
-      " \     'linter_checking': 'left',
-      " \     'linter_warnings': 'warning',
-      " \     'linter_errors': 'error',
-      " \     'linter_ok': 'left',
+      " \   'left': [ ['relativepath'] ]
       " \ },
       " \ 'component_function': {
-      " \   'linter_checking': 'lightline#ale#checking',
-      " \   'linter_warnings': 'lightline#ale#warnings',
-      " \   'linter_errors': 'lightline#ale#errors',
-      " \   'linter_ok': 'lightline#ale#ok',
+      " \   'cocstatus': 'coc#status',
       " \   'currentfunction': 'CocCurrentFunction'
       " \ },
       " \ }
 
-" let g:lightline#ale#indicator_checking = "\uf110"
-" let g:lightline#ale#indicator_warnings = "\uf071"
-" let g:lightline#ale#indicator_errors = "\uf05e"
-" let g:lightline#ale#indicator_ok = "\uf00c"
+let g:lightline = {
+      \ 'colorscheme': 'dracula',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste', 'linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ],
+      \             [ 'currentfunction', 'readonly', 'relativepath', 'modified' ] ],
+      \ },
+      \ 'inactive': {
+      \   'left': [ [], ['relativepath'] ]
+      \ },
+      \ 'component_type': {
+      \     'linter_checking': 'left',
+      \     'linter_warnings': 'warning',
+      \     'linter_errors': 'error',
+      \     'linter_ok': 'left',
+      \ },
+      \ 'component_function': {
+      \   'linter_checking': 'lightline#ale#checking',
+      \   'linter_warnings': 'lightline#ale#warnings',
+      \   'linter_errors': 'lightline#ale#errors',
+      \   'linter_ok': 'lightline#ale#ok',
+      \   'currentfunction': 'CocCurrentFunction'
+      \ },
+      \ }
+
+let g:lightline#ale#indicator_checking = "\uf110"
+let g:lightline#ale#indicator_warnings = "\uf071"
+let g:lightline#ale#indicator_errors = "\uf05e"
+let g:lightline#ale#indicator_ok = "\uf00c"
 
 " DASH
 nmap <silent> <leader>d <Plug>DashSearch
@@ -333,8 +341,11 @@ nnoremap <C-t><C-j> :tabl<cr>
 nnoremap <C-t><C-h> :tabp<cr>
 nnoremap <C-t><C-l> :tabn<cr>
 nnoremap <C-t><C-s> :tabs<cr>
-nnoremap <C-t><C-n> :tabnew<cr>
+nnoremap <C-t><C-t> :tabnew<cr>
 nnoremap <C-t><C-w> :tabc<cr>
+
+nnoremap <C-w><C-v> :vnew<cr>
+nnoremap <C-w><C-s> :new<cr>
 
 " NERDCommenter
 let g:NERDSpaceDelims = 1
