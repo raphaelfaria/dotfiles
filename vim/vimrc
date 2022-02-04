@@ -19,6 +19,7 @@ Plug 'neoclide/coc.nvim', { 'branch': 'release' }
 " Plug 'dense-analysis/ale'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 Plug 'junegunn/fzf.vim'
+Plug 'benwainwright/fzf-project'
 Plug 'mattn/emmet-vim'
 Plug 'scrooloose/nerdtree'
 Plug 'ryanoasis/vim-devicons'
@@ -183,7 +184,7 @@ nnoremap <silent> <leader>oo :<C-u>CocList outline<cr>
 nnoremap <silent> <leader>om :<C-u>CocList outline -k Method<cr>
 nnoremap <silent> <leader>of :<C-u>CocList outline -k Function<cr>
 nnoremap <silent> <leader>s  :<C-u>CocList -I symbols<cr>
-nnoremap <silent> <leader>a  :<C-u>CocList diagnostics<cr>
+nnoremap <silent> <leader>d  :<C-u>CocList diagnostics<cr>
 
 " Use `[c` and `]c` for navigate diagnostics errors
 " nmap <silent> [c <Plug>(ale_previous_wrap_error)
@@ -237,7 +238,9 @@ command! -bang -nargs=* Ag
       \ )
 nmap <C-F> :Ag<space>
 nmap <C-u> :Buffers<CR>
-nmap <leader>p :Files<CR>
+nmap <silent> <leader>p :FzfChooseProjectFile<CR>
+nmap <silent> <leader>c :FzfSwitchProject<CR>
+nmap <silent> <leader>a :Files<CR>
 
 command! -bang -nargs=? -complete=dir Files
   \ call fzf#vim#files(<q-args>, fzf#vim#with_preview(), <bang>0)
@@ -253,12 +256,16 @@ else
   nmap <C-p> :Files<CR>
 endif
 
+let g:fzfSwitchProjectWorkspaces = [ '~/Workspace/Avira/pwm' ]
+
 " NERDTree
 nmap <C-b> :NERDTreeToggle<CR>
 nmap <leader>tf :NERDTreeFind<CR>
 " close vim if only NERDTree is open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 let NERDTreeShowHidden = 1
+let g:NERDTreeMapOpenVSplit = 'v'
+let g:NERDTreeMapOpenSplit = 's'
 
 " indentline
 let g:indentLine_fileTypeExclude = ['json', 'markdown']
@@ -328,7 +335,7 @@ let g:lightline#ale#indicator_errors = "\uf05e"
 let g:lightline#ale#indicator_ok = "\uf00c"
 
 " DASH
-nmap <silent> <leader>d <Plug>DashSearch
+nmap <silent> <leader>k <Plug>DashSearch
 nmap <C-D> :Dash<space>
 
 " Tabs
@@ -358,3 +365,4 @@ xmap ga <Plug>(EasyAlign)
 
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
+
